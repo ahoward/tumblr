@@ -1,0 +1,80 @@
+NAME
+  tumblr
+
+SYNOPSIS
+  tumblr (setup|write|read|authenticate|check-vimeo|check-audio) [options]+
+
+DESCRIPTION
+  tumblr.rb is a command line utility and library which interfaces to the
+  excellent tumblr blogging platform @ http://www.tumblr.com
+  
+  tumblr.rb implements the complete restful api in both library and
+  command line utility, doccumented in full @ http://www.tumblr.com/api
+  
+  === install ===
+  
+    gem install tumblr
+  
+  === cli ===
+  
+    the cli exactly mirrors the library api.  arguments are passed to each
+    method as 'key=val' pairs, values may be read from files using the
+    syntax 'key=file=val' or 'key==val'
+  
+    you should first cache your login info to avoid having to pass it everytime
+  
+      cfp: ~> tumblr setup --email=my_email --password=my_password --name=drawohara
+      /Users/ahoward/.tumblr.yml
+  
+    you can post
+  
+      cfp: ~> tumblr write regular title=testing body=rock_on
+  
+    you can post from files
+  
+      cfp: ~> tumblr write regular title=slurp body==./post.html
+  
+    you can read
+  
+      cfp: ~> tumblr read start=42 num=42 
+  
+    you can test the auth
+  
+      cfp: ~> tumblr authenticate
+  
+    etc.
+  
+  === api ===
+  
+    it's pretty simple.  here's a start, use the web docs to figure out the
+    rest
+  
+      config = {
+        :email => my_email,
+        :password => my_password,
+        :name => 'drawohara'
+      }
+  
+      tumblr = Tumblr.for config
+  
+      abort unless tumblr.uri == 'http://drawohara.tumblr.com'
+  
+      response = tumblr.write :regular, :title = title, :body => body
+  
+      video = open 'video.mpg'
+      response = tumblr.write :video, :data => video, :title => video.path 
+  
+      response = tumblr.read :start => 42, :num => 42
+      xml = response.content
+  
+      response = tumblr.read :start => 42, :num => 42, :json => true
+      json = response.content
+
+PARAMETERS
+  --name=name, -n (0 ~> name) 
+  --email=email, -e (0 ~> email) 
+  --password=password, -p (0 ~> password) 
+  --debug, -d 
+  --json, -j 
+  --help, -h 
+

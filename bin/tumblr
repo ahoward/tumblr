@@ -1,0 +1,181 @@
+#! /usr/bin/env ruby
+
+require "tumblr"
+
+Main {
+  description <<-txt
+    tumblr.rb is a command line utility and library which interfaces to the
+    excellent tumblr blogging platform @ http://www.tumblr.com
+
+    tumblr.rb implements the complete restful api in both library and
+    command line utility, doccumented in full @ http://www.tumblr.com/api
+
+    === install ===
+
+      gem install tumblr
+
+    === cli ===
+
+      the cli exactly mirrors the library api.  arguments are passed to each
+      method as 'key=val' pairs, values may be read from files using the
+      syntax 'key=file=val' or 'key==val'
+
+      you should first cache your login info to avoid having to pass it everytime
+
+        cfp: ~> tumblr setup --email=my_email --password=my_password --name=drawohara
+        /Users/ahoward/.tumblr.yml
+
+      you can post
+
+        cfp: ~> tumblr write regular title=testing body=rock_on
+
+      you can post from files
+
+        cfp: ~> tumblr write regular title=slurp body==./post.html
+
+      you can read
+
+        cfp: ~> tumblr read start=42 num=42 
+
+      you can test the auth
+
+        cfp: ~> tumblr authenticate
+
+      etc.
+
+    === api ===
+
+      it's pretty simple.  here's a start, use the web docs to figure out the
+      rest
+
+        config = {
+          :email => my_email,
+          :password => my_password,
+          :name => 'drawohara'
+        }
+
+        tumblr = Tumblr.for config
+
+        abort unless tumblr.uri == 'http://drawohara.tumblr.com'
+
+        response = tumblr.write :regular, :title = title, :body => body
+    
+        video = open 'video.mpg'
+        response = tumblr.write :video, :data => video, :title => video.path 
+
+        response = tumblr.read :start => 42, :num => 42
+        xml = response.content
+
+        response = tumblr.read :start => 42, :num => 42, :json => true
+        json = response.content
+  txt
+
+  alias_method "run", "help!"
+
+  option("name", "n"){ argument_required }
+  option("email", "e"){ argument_required }
+  option("password", "p"){ argument_required }
+  option("debug", "d"){ }
+  option("json", "j"){ }
+
+  def home
+    ENV["HOME"] || ENV["HOMEPATH"] || File::expand_path("~")
+  end
+
+  def configfile
+    File.join home, ".tumblr.yml"
+  end
+
+  def parse_args
+    hash = { 'json' => params['json'].value }
+    argv.inject hash do |args, arg|
+      k, v = arg.split %r/=/, 2
+      if v[%r/^(?:file|path)?=/]
+        file, v = v.split %r/=/, 2
+        v = v == '-' ? STDIN.read : IO.read(v)
+      end
+      v ||= true
+      args.update k => v
+    end
+  end
+
+  def config
+    @config ||= (
+      h = test(?e, configfile) ? YAML.load(IO.read(configfile)) : Hash.new
+      %w[ name email password ].each do |k|
+        h[k] = params[k].value if params[k].given?
+      end
+      h['debug'] = STDERR if params["debug"].given?
+      h
+    )
+  end
+
+  def tumblr 
+    Tumblr.for config
+  end
+
+  def handle response
+    unless Tumblr.successful?(response)
+      STDERR.puts response.status
+      STDOUT.puts response.content
+      exit 1 
+    else
+      STDOUT.puts response.content
+    end
+  end
+
+  mode "setup" do
+    option("name", "n"){ argument_required and required }
+    option("email", "e"){ argument_required and required }
+    option("password", "p"){ argument_required and required }
+
+    def run
+      keys = %w[ name email password ]
+      conf = keys.inject({}) do |h,k|
+        raise "#{ k } not given" unless params[k].given?
+        h.update k => params[k].value
+      end
+      open(configfile, "w"){|fd| fd.write conf.to_yaml}
+      tumblr.authenticate
+      puts configfile
+    end
+  end
+
+  mode "write" do
+    def run
+      handle tumblr.write(mode, parse_args)
+    end
+
+    mode "regular"
+    mode "photo"
+    mode "quote"
+    mode "link"
+    mode "conversation"
+    mode "video"
+    mode "audio"
+  end
+
+  mode "read" do
+    def run
+      handle tumblr.read(mode, parse_args)
+    end
+  end
+
+  mode "authenticate" do
+    def run
+      handle tumblr.authenticate
+    end
+  end
+
+  mode "check-vimeo" do
+    def run
+      handle tumblr.check_vimeo
+    end
+  end
+
+  mode "check-audio" do
+    def run
+      handle tumblr.check_audio
+    end
+  end
+}
