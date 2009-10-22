@@ -15,8 +15,8 @@ Gem::Specification::new do |spec|
 
   spec.has_rdoc = true
   spec.test_files = nil
-  spec.add_dependency 'fattr'
   spec.add_dependency 'main'
+  spec.add_dependency 'fattr'
   spec.add_dependency 'httpclient'
 
   spec.extensions.push(*[])

@@ -89,13 +89,13 @@ Main {
   def parse_args
     hash = { 'json' => params['json'].value }
     argv.inject hash do |args, arg|
-      k, v = arg.split %r/=/, 2
-      if v[%r/^(?:file|path)?=/]
-        file, v = v.split %r/=/, 2
+      k, v = arg.split(%r/=/, 2)
+      if v =~ %r/^(?:file|path)?=/
+        file, v = v.split(%r/=/, 2)
         v = v == '-' ? STDIN.read : IO.read(v)
       end
       v ||= true
-      args.update k => v
+      args.update(k => v)
     end
   end
 
