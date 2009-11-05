@@ -3,10 +3,10 @@
 
 Gem::Specification::new do |spec|
   spec.name = "tumblr"
-  spec.version = "2.0.0"
+  spec.version = "2.1.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "tumblr"
-  spec.description = "a command line utility and library for the excellent tumblr blogging platform"
+  spec.description = "description: tumblr kicks the ass"
 
   spec.files = ["bin", "bin/tumblr", "lib", "lib/tumblr.rb", "Rakefile", "README", "tumblr.gemspec"]
   spec.executables = ["tumblr"]
@@ -15,9 +15,8 @@ Gem::Specification::new do |spec|
 
   spec.has_rdoc = true
   spec.test_files = nil
-  spec.add_dependency 'main'
-  spec.add_dependency 'fattr'
-  spec.add_dependency 'httpclient'
+  #spec.add_dependency 'lib', '>= version'
+  #spec.add_dependency 'fattr'
 
   spec.extensions.push(*[])
 

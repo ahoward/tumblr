@@ -4,7 +4,6 @@ This.author = "Ara T. Howard"
 This.email = "ara.t.howard@gmail.com"
 This.homepage = "http://github.com/ahoward/#{ This.lib }/tree/master"
 
-
 task :default do
   puts(Rake::Task.tasks.map{|task| task.name} - ['default'])
 end
@@ -89,9 +88,7 @@ task :gemspec do
       }
     end
 
-  unless test(?e, "#{ lib }.gemspec")
-    open("#{ lib }.gemspec", "w"){|fd| fd.puts template}
-  end
+  open("#{ lib }.gemspec", "w"){|fd| fd.puts template}
   This.gemspec = "#{ lib }.gemspec"
 end
 

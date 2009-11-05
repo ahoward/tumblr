@@ -1,19 +1,24 @@
 #
-# gems
-#
-  require "main"
-  require "fattr"
-  require "httpclient"
-#
 # built-in
 #
   require "uri"
   require "yaml"
 #
+# gems
+#
+  begin
+    require 'rubygems'
+  rescue LoadError
+    nil
+  end
+  require "main"
+  require "fattr"
+  require "httpclient"
+#
 # tumblr.rb
 #
   module Tumblr
-    Version = '2.0.1'
+    Version = '2.1.0'
 
     class << Tumblr
       def version() Tumblr::Version end
