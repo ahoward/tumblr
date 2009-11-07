@@ -37,7 +37,11 @@ DESCRIPTION
     you can read
   
       cfp: ~> tumblr read start=42 num=42 
-  
+
+    you can delete a post
+
+        cfp: ~> tumblr delete post-id=42
+
     you can test the auth
   
       cfp: ~> tumblr authenticate
