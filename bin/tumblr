@@ -37,6 +37,10 @@ Main {
 
         cfp: ~> tumblr read start=42 num=42 
 
+      you can delete a post
+
+        cfp: ~> tumblr delete post-id=42
+
       you can test the auth
 
         cfp: ~> tumblr authenticate
@@ -158,6 +162,12 @@ Main {
   mode "read" do
     def run
       handle tumblr.read(mode, parse_args)
+    end
+  end
+
+  mode "delete" do
+    def run
+      handle tumblr.delete(mode, parse_args)
     end
   end
 

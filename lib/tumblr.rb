@@ -66,6 +66,7 @@
       fattr("uri_write"){ "#{ uri }/write" }
       fattr("uri_read"){ "#{ uri }/read" }
       fattr("uri_read_json"){ "#{ uri }/read/json" }
+      fattr("uri_delete"){ "#{ uri }/delete" }
 
       def initialize options = {}
         options.each{|k,v| send k, v}
@@ -81,6 +82,12 @@
         json = options.delete('json') || options.delete(:json)
         uri = json ? uri_read_json : uri_read
         get uri, options.merge(account.options)
+      end
+
+      def delete type, options = {}
+        json = options.delete('json') || options.delete(:json)
+        uri = uri_delete
+        post uri, options.merge(account.options)
       end
 
       def authenticate options = {}
