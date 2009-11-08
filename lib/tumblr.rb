@@ -18,10 +18,12 @@
 # tumblr.rb
 #
   module Tumblr
-    Version = '2.1.0'
+    Version = '2.2.0'
+    Description = 'a command line utility and library which interfaces to the excellent tumblr blogging platform'
 
     class << Tumblr
       def version() Tumblr::Version end
+      def description() Tumblr::Description end
 
       def for *a, &b
         Account.new *a, &b

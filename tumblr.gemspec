@@ -3,10 +3,10 @@
 
 Gem::Specification::new do |spec|
   spec.name = "tumblr"
-  spec.version = "2.1.0"
+  spec.version = "2.2.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "tumblr"
-  spec.description = "description: tumblr kicks the ass"
+  spec.description = "a command line utility and library which interfaces to the excellent tumblr blogging platform"
 
   spec.files = ["bin", "bin/tumblr", "lib", "lib/tumblr.rb", "Rakefile", "README", "tumblr.gemspec"]
   spec.executables = ["tumblr"]
